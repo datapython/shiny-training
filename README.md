@@ -1,4 +1,4 @@
-Intermediate Shiny Workshop
+# Intermediate Shiny Workshop
 
 Materials for an intermediate level Shiny workshop.
 
