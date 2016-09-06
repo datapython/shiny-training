@@ -74,9 +74,13 @@ ui <- fluidPage(
                     value = TRUE)
     ),
     
-    # Output: Show scatterplot ------------------------------------------------
+    # Output ------------------------------------------------------------------
     mainPanel(
+
+      # Show scatterplot ------------------------------------------------------
       plotOutput(outputId = "scatterplot"),
+
+      # Show data table -------------------------------------------------------
       dataTableOutput(outputId = "moviestable")
     )
   )
