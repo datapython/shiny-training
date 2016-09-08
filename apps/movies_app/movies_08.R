@@ -123,7 +123,12 @@ server <- function(input, output) {
   
   # Print number of movies plotted --------------------------------------------
   output$n <- renderText({
-    paste("There are", nrow(movies_subset()), input$selected_type, "movies in this dataset.")
+      counts <- movies_subset() %>%
+        group_by(title_type) %>%
+        summarise(count = n()) %>%
+        select(count) %>%
+        unlist()
+      paste("There are", counts, input$selected_type, "movies in this dataset.")
   })
   
   # Print data table if checked -----------------------------------------------
