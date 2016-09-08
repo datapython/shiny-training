@@ -125,8 +125,7 @@ server <- function(input, output, session) {
   observe({
     updateNumericInput(session, 
                        inputId = "n_samp",
-                       value = nrow(movies_subset()), 
-                       max = nrow(movies_subset())
+                       value = nrow(movies_subset())
                        )
   })
   

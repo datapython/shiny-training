@@ -96,8 +96,10 @@ ui <- fluidPage(
       
       # Get a new sample ------------------------------------------------------
       actionButton(inputId = "get_new_sample", 
-                   label = "Get new sample"),     
-      HTML("<br><br>"),    # a little bit of visual separation
+                   label = "Get new sample"), 
+      
+      # A little bit of visual separation -------------------------------------
+      HTML("<br><br>"),
       
       # Download sampled data as csv ------------------------------------------
       actionButton(inputId = "download_csv", 
@@ -133,8 +135,7 @@ server <- function(input, output, session) {
   # Update the maximum allowed n_samp for selected type movies ---------------- 
   observe({
     updateNumericInput(session, 
-                       inputId = "n_samp",
-                       value = nrow(movies_subset()), 
+                       inputId = "n_samp", 
                        max = nrow(movies_subset())
     )
   })
@@ -143,8 +144,9 @@ server <- function(input, output, session) {
   movies_sample <- eventReactive(eventExpr = input$get_new_sample,
                                  valueExpr = {
                                    movies_subset() %>%
-                                     sample_n(input$n_samp) 
-                                 }
+                                     sample_n(input$n_samp)
+                                 },
+                                 ignoreNULL = FALSE
   )
   
   # Convert plot_title toTitleCase --------------------------------------------
@@ -184,7 +186,7 @@ server <- function(input, output, session) {
   # Download sampled data as csv ----------------------------------------------
   observeEvent(eventExpr = input$download_csv, 
                handlerExpr = { write.csv(movies_sample(), 
-                                         file = paste("movies_", Sys.time(), ".csv"),
+                                         file = paste0("movies_", Sys.time(), ".csv"),
                                          row.names = FALSE) }
   )
   

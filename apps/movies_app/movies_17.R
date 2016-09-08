@@ -92,11 +92,22 @@ ui <- fluidPage(
       numericInput(inputId = "n_samp", 
                    label = "Sample size:", 
                    min = 1, max = nrow(movies), 
-                   value = 50)
+                   value = 50),
+      
+      # A little bit of visual separation -------------------------------------
+      HTML("<br><br>"),
+      
+      # Download sampled data as csv ------------------------------------------
+      actionButton(inputId = "download_csv", 
+                   label = "Download CSV")
     ),
     
     # Output: -----------------------------------------------------------------
     mainPanel(
+      
+      # Print how long app is being viewed for --------------------------------
+      textOutput(outputId = "time_elapsed"),
+      HTML("<br>"),        # a little bit of visual separation
       
       # Show scatterplot ------------------------------------------------------
       plotOutput(outputId = "scatterplot"),
@@ -105,7 +116,7 @@ ui <- fluidPage(
       # Print number of obs plotted -------------------------------------------
       textOutput(outputId = "n"),
       HTML("<br><br>"),    # a little bit of visual separation
-
+      
       # Show data table -------------------------------------------------------
       dataTableOutput(outputId = "moviestable")
     )
@@ -124,16 +135,16 @@ server <- function(input, output, session) {
   # Update the maximum allowed n_samp for selected type movies ---------------- 
   observe({
     updateNumericInput(session, 
-                       inputId = "n_samp",
-                       value = nrow(movies_subset())
-                       )
+                       inputId = "n_samp", 
+                       max = nrow(movies_subset())
+    )
   })
   
-  # Create a new data frame that is n_samp observations from selected type movies --
-  movies_sample <- reactive({ 
+  # Get new sample every 5 seconds --------------------------------------------
+  movies_sample <- reactive({ invalidateLater(millis = 5000)
     movies_subset() %>%
-      sample_n(input$n_samp) 
-  })
+      sample_n(input$n_samp)
+    })
   
   # Convert plot_title toTitleCase --------------------------------------------
   pretty_plot_title <- reactive({ toTitleCase(input$plot_title) })
@@ -141,23 +152,23 @@ server <- function(input, output, session) {
   # Create the scatterplot object the plotOutput function is expecting --------
   output$scatterplot <- renderPlot({
     ggplot(data = movies_sample(), aes_string(x = input$x, y = input$y,
-                                     color = input$z)) +
+                                              color = input$z)) +
       geom_point(alpha = input$alpha, size = input$size) +
       labs(x = toTitleCase(str_replace_all(input$x, "_", " ")),
            y = toTitleCase(str_replace_all(input$y, "_", " ")),
            color = toTitleCase(str_replace_all(input$z, "_", " ")),
            title = pretty_plot_title()
-           )
+      )
   })
   
   # Print number of movies plotted --------------------------------------------
   output$n <- renderText({
-      counts <- movies_sample() %>%
-        group_by(title_type) %>%
-        summarise(count = n()) %>%
-        select(count) %>%
-        unlist()
-      paste("There are", counts, input$selected_type, "movies in this dataset.")
+    counts <- movies_sample() %>%
+      group_by(title_type) %>%
+      summarise(count = n()) %>%
+      select(count) %>%
+      unlist()
+    paste("There are", counts, input$selected_type, "movies in this dataset.")
   })
   
   # Print data table if checked -----------------------------------------------
@@ -168,6 +179,24 @@ server <- function(input, output, session) {
                     rownames = FALSE)
     }
   )
+  
+  # Download sampled data as csv ----------------------------------------------
+  observeEvent(eventExpr = input$download_csv, 
+               handlerExpr = { write.csv(movies_sample(), 
+                                         file = paste0("movies_", Sys.time(), ".csv"),
+                                         row.names = FALSE) }
+  )
+  
+  # Calculate time difference between when app is first launched and now ------
+  beg <- reactive({ Sys.time() })
+  now <- reactive({ invalidateLater(millis = 1000); Sys.time() })
+  diff <- reactive({ round(difftime(now(), beg(), units = "secs")) })
+  
+  # Print time viewing app ----------------------------------------------------
+  output$time_elapsed <- renderText({
+    paste("You have been viewing this app for", diff(), "seconds.")
+  })
+  
 }
 
 # Run the application ---------------------------------------------------------

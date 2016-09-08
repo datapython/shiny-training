@@ -6,6 +6,7 @@
 	- DT
 	- stringr
 	- tools
+	- dplyr
 
 - Load the following dataset:
 	- movies.Rdata

@@ -129,8 +129,7 @@ server <- function(input, output, session) {
   observe({
     updateNumericInput(session, 
                        inputId = "n_samp",
-                       value = nrow(movies_subset()), 
-                       max = nrow(movies_subset())
+                       value = nrow(movies_subset())
                        )
   })
   
@@ -177,7 +176,7 @@ server <- function(input, output, session) {
   # Download sampled data as csv ----------------------------------------------
   observeEvent(eventExpr = input$download_csv, 
                handlerExpr = { write.csv(movies_sample(), 
-                                         file = paste("movies_", Sys.time(), ".csv"),
+                                         file = paste0("movies_", Sys.time(), ".csv"),
                                          row.names = FALSE) }
                )
 
