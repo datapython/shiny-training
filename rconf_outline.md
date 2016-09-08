@@ -7,9 +7,16 @@ Materials for an intermediate level Shiny workshop at [rstudio::conf](https://ww
 
 ### Day 1, Morning: Shiny essentials
 
-- 9 - 9:50 am - Part 1: A fast introduction to Shiny
-- 10 - 10:50 am - Part 2: Reactive programming
-- 11am - 12 pm - Part 3: Understanding UI
+- 9 - 9:50 am - Part 1: Part 1: A fast introduction to Shiny (01_fast_intro)
+	- High level view
+	- Anatomy of a Shiny app
+	- File structure
+	- Sharing your app
+- 10 - 10:50 am - Part 2: Reactive programming (02_reactive_prog)
+	- Reactivity 101
+	- Reactive objects
+	- Reactive functions
+- 11am - 12 pm - Part 3: Understanding UI (in progress)
 
 ### Day 1, Afternoon: Graphics and visualization
 
@@ -26,11 +33,9 @@ Materials for an intermediate level Shiny workshop at [rstudio::conf](https://ww
 ### Day 2, Morning: Increasing performance
 
 - 9 - 9:50 am - Part 1: Advanced reactivity
-	- Performance considerations:
-		+ Stop reactions with isolate()
-		+ Schedule with invalidateLater()
-		+ reactivePoll() and reactiveFileReader()
-	- Reactivity best practices and observers
+	- Stop - delay - trigger
+	- Performance considerations
+	- Reactivity best practices
 - 10 - 10:50 am - Part 2: Performance and troubleshooting
 	- Other performance considerations (30 mins) 
 	- Tips for troubleshooting (30 mins)
